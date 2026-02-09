@@ -5,5 +5,23 @@
         <link rel="stylesheet" href="css/style.css">
     </head>
     <body>
+        <h1>Health Outcomes Dashboard</h1>
+        <div class="author">Isaac Dowdy</div>
+        <div class = "divider"></div>
+
+        <svg id="barChart"></svg>
+
+        <div class="source">
+            Data from:
+            <ul>
+                <li>Health Expenditure: <a href="https://ourworldindata.org/grapher/annual-healthcare-expenditure-per-capita?time=2022">ourworldindata.org</a></li>
+                <li>Life Expectancy: <a href="https://ourworldindata.org/grapher/life-expectancy?tab=map&time=2022&country=OWID_WRL~Americas~OWID_EUR~OWID_AFR">ourworldindata.org</a></li>
+            </ul>
+            NOTE: Data from 2022
+        </div>
+
+        <script src="js/d3.v6.min.js"></script>
+        <script src="js/main.js"></script>
+        <script src="js/expenditureHistogram.js"></script>
     </body>
 </html>
