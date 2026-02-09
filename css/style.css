@@ -30,3 +30,8 @@ h1 {
 .source a {
     color: #888;
 }
+
+.axis-label {
+    font-size: 13px;
+    fill: #888;   
+}
