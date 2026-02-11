@@ -18,6 +18,14 @@ d3.csv('data/health-outcomes.csv')
         }, data);
         expenditureChart.updateVis();
 
+        expectancyChart = new expectancyHistogram ({
+            parentElement: '#barChart2',
+            containerWidth: 600,
+            containerHeight: 400,
+            margin: {top: 40, right: 20, bottom: 50, left: 70}
+        }, data);
+        expectancyChart.updateVis();
+
     });
 
 
