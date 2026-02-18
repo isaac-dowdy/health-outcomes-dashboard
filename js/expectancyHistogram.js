@@ -80,12 +80,13 @@ class expectancyHistogram {
     renderVis() {
         let vis = this;
 
-        vis.svg.selectAll('rect')
+        vis.chart.selectAll('rect')
             .data(vis.bins)
             .join('rect')
+            .attr('class', 'bar')
             .attr('x', d => vis.xScale(d.x0) + 1)
             .attr('width', d => Math.max(0, vis.xScale(d.x1) - vis.xScale(d.x0) - 1))
-            .attr('y', d => vis.yScale(d.length) + vis.config.margin.top)
+            .attr('y', d => vis.yScale(d.length))
             .attr('height', d => vis.height - vis.yScale(d.length))
             .attr('fill', 'steelblue');
 
