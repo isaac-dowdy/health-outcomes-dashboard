@@ -22,6 +22,24 @@ h1 {
     background: linear-gradient(to right, #aaa, #ddd);
 }
 
+.dashboard {
+    display: flex;
+    align-items: flex-start;
+    gap: 40px;
+}
+
+.maps {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 20px;
+}
+
+.charts {
+    display: flex;
+    flex-direction: column;
+    gap: 25px;
+}
+
 .source {
     font-size: 12.5px;
     color: #888;
@@ -34,4 +52,12 @@ h1 {
 .axis-label {
     font-size: 13px;
     fill: #888;   
+}
+
+.legend-title {
+  font-size: .7rem;
+  font-weight: 600;
+}
+.legend-label {
+  font-size: .7rem;
 }

@@ -50,22 +50,19 @@ class scatterplot {
         vis.yAxisGroup = vis.chart.append('g')
             .attr('class', 'y-axis');
 
-        vis.xAxisLabel = vis.xAxisGroup.append('text')
+        vis.xAxisLabel = vis.svg.append('text')
             .attr('class', 'axis-label')
-            .attr('x', vis.width / 2)
-            .attr('y', vis.config.margin.bottom - 10)
-            .attr('dy', '0.71em')
-            .style('text-anchor', 'middle')
+            .attr('x', vis.config.containerWidth / 2)
+            .attr('y', vis.config.containerHeight - 30)
+            .attr('text-anchor', 'middle')
             .text('Health Expenditure per Capita (USD)');
 
-        vis.yAxisLabel = vis.yAxisGroup.append('text')
+        vis.yAxisLabel = vis.svg.append('text')
             .attr('class', 'axis-label')
             .attr('transform', 'rotate(-90)')
-            .attr('x', -vis.height / 2)
-            .attr('y', -vis.config.margin.left + 15)
-            .attr('dy', '-0.5em')
+            .attr('y', 15)
             .attr('text-anchor', 'end')
-            .text('Life Expectancy');
+            .text('Life Expectancy (years)')
 
         vis.updateVis();     
     }
@@ -80,11 +77,10 @@ class scatterplot {
             .attr('r', 4)
             .attr('cy', d => vis.yScale(d.Expectancy))
             .attr('cx', d => vis.xScale(d.Expenditure))
-            .attr('fill', 'steelblue');
+            .attr('fill', '#08519c');
 
             vis.xAxisGroup.call(vis.xAxis);
             vis.yAxisGroup.call(vis.yAxis);
 
-            console.log(vis.data);
     }
 }
