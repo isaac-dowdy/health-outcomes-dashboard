@@ -65,7 +65,7 @@ class expenditureHistogram {
         vis.chart.append('text')
             .attr('class', 'axis-label')
             .attr('x', 5)
-            .attr('y', 0)
+            .attr('y', -10)
             .attr('dy', '0.71em')
             .text('Number of Countries');
 
@@ -90,7 +90,7 @@ class expenditureHistogram {
             .attr('transform', d => `translate(${vis.xScale(d.x0) + vis.config.margin.left}, ${vis.yScale(d.length) + vis.config.margin.top})`)
             .attr('width', d => vis.xScale(d.x1) - vis.xScale(d.x0) - 1)
             .attr('height', d => vis.height - vis.yScale(d.length))
-            .attr('fill', 'steelblue');
+            .attr('fill', '#08519c');
 
         vis.xAxisGroup.call(vis.xAxis);
         vis.yAxisGroup.call(vis.yAxis);

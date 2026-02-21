@@ -88,7 +88,7 @@ class expectancyHistogram {
             .attr('width', d => Math.max(0, vis.xScale(d.x1) - vis.xScale(d.x0) - 1))
             .attr('y', d => vis.yScale(d.length))
             .attr('height', d => vis.height - vis.yScale(d.length))
-            .attr('fill', 'steelblue');
+            .attr('fill', '#08519c');
 
         vis.yAxisGroup.call(vis.yAxis);
         vis.xAxisGroup.call(vis.xAxis);
