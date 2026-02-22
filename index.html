@@ -11,8 +11,28 @@
 
         <div class="dashboard">
             <div class="maps">
-                <svg id="choropleth1"></svg>
-                <svg id="choropleth2"></svg>            
+                <div class="maps-row">
+                    <svg id="choropleth1"></svg>
+                    <svg id="choropleth2"></svg>
+                </div>
+                <div class="control-panel">
+                    <div class="dropdown1">
+                        <button onclick="myFunction1()" class="dropbtn">Attribute 1</button>
+                        <div id="myDropdown1" class="dropdown-content">
+                            <a href="#">Link 1</a>
+                            <a href="#">Link 2</a>
+                            <a href="#">Link 3</a>
+                        </div>
+                    </div>
+                    <div class="dropdown2">
+                        <button onclick="myFunction2()" class="dropbtn">Attribute 2</button>
+                        <div id="myDropdown2" class="dropdown-content">
+                            <a href="#">Link 1</a>
+                            <a href="#">Link 2</a>
+                            <a href="#">Link 3</a>
+                        </div>
+                    </div>
+                </div>      
             </div>
 
             <div class="charts">
@@ -36,8 +56,7 @@
 
         <script src="js/d3.v6.min.js"></script>
         <script src="js/main.js"></script>
-        <script src="js/expenditureHistogram.js"></script>
-        <script src="js/expectancyHistogram.js"></script>
+        <script src="js/histogram.js"></script>
         <script src="js/scatterplot.js"></script>
         <script src="js/choroplethMap.js"></script>
     </body>
