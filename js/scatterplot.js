@@ -19,13 +19,17 @@ class scatterplot {
         vis.width = vis.config.containerWidth - vis.config.margin.left - vis.config.margin.right;
         vis.height = vis.config.containerHeight - vis.config.margin.top - vis.config.margin.bottom;
 
+        // filter out null values: when not filtered, they are plotted at 0 for some reason
+        const validAttribute1 = vis.data.filter(d => d[vis.config.attribute1] != null);
+        const validAttribute2 = vis.data.filter(d => d[vis.config.attribute2] != null);
+
         vis.xScale = d3.scaleLinear()
             .range([0, vis.width])
-            .domain([0, d3.max(vis.data, d => d[vis.config.attribute1])]);
+            .domain([0, d3.max(validAttribute1, d => d[vis.config.attribute1])]);
 
         vis.yScale = d3.scaleLinear()
             .range([vis.height, 0])
-            .domain([0, d3.max(vis.data, d => d[vis.config.attribute2])]);
+            .domain([0, d3.max(validAttribute2, d => d[vis.config.attribute2])]);
 
         vis.xAxis = d3.axisBottom(vis.xScale)
             .ticks(12)
@@ -64,14 +68,43 @@ class scatterplot {
         vis.updateVis();     
     }
 
+    // Called whenever a new attribute is selected; updates the current attribute, filters values, and sets up the scales and the axis labels
+    updateAttribute(attribute1, attribute2) 
+    {
+        let vis = this;
+
+        vis.config.attribute1 = attribute1;
+        vis.config.attribute2 = attribute2;
+
+        // filter out null values: when not filtered, they are plotted at 0 for some reason
+        const validAttribute1 = vis.data.filter(d => d[attribute1] != null);
+        const validAttribute2 = vis.data.filter(d => d[attribute2] != null);
+
+        // update scales
+        vis.xScale.domain([0, d3.max(validAttribute1, d => d[vis.config.attribute1])]);
+        vis.yScale.domain([0, d3.max(validAttribute2, d => d[vis.config.attribute2])]);
+
+        // update axis labels
+        vis.xAxisLabel.text(attribute1);
+        vis.yAxisLabel.text(attribute2);
+
+        vis.updateVis();
+
+    }
+
     updateVis() {
         let vis = this;
 
+        // Filter out data points with null values
+        const validData = vis.data.filter(d => d[vis.config.attribute1] != null && d[vis.config.attribute2] != null);
+
         const circles = vis.chart.selectAll('.point')
-            .data(vis.data, d => d.Country)
+            .data(validData, d => d.Country)
             .join('circle')
             .attr('class', 'point')
             .attr('r', 4)
+            .transition() // pretty transitionssss
+            .duration(750)
             .attr('cy', d => vis.yScale(d[vis.config.attribute2]))
             .attr('cx', d => vis.xScale(d[vis.config.attribute1]))
             .attr('fill', '#08519c');

@@ -26,18 +26,21 @@ class Histogram {
             .attr('width', vis.config.containerWidth)
             .attr('height', vis.config.containerHeight);
       
+        // Filter out null values, when not filtered, they are plotted at 0 for some reason
+        const validData = vis.data.filter(d => d[vis.config.attribute] != null);
+
         // Scale for x-axis
         vis.xScale = d3.scaleLinear()
             .range([0, vis.width])
-            .domain(d3.extent(vis.data, d => +d[vis.config.attribute]))
+            .domain(d3.extent(validData, d => d[vis.config.attribute]))
             .nice(10);
             
         vis.histogram = d3.histogram()
-            .value(d => +d[vis.config.attribute])
+            .value(d => d[vis.config.attribute])
             .domain(vis.xScale.domain())
             .thresholds(vis.xScale.ticks(10)); // 10 bins for histogram
 
-        vis.bins = vis.histogram(vis.data);
+        vis.bins = vis.histogram(validData);
 
         // Scale for y-axis (number of countries)
         vis.yScale = d3.scaleLinear()
@@ -59,7 +62,7 @@ class Histogram {
 
 
         // Create axis labels
-        vis.chart.append('text')
+        vis.xAxisLabel = vis.chart.append('text')
             .attr('class', 'axis-label')
             .attr('x', vis.width + 10)
             .attr('y', vis.height + 25)
@@ -78,20 +81,35 @@ class Histogram {
 
     }
 
+    // Called when a new attribute is selected; updates the current attribute, axis labels
+    updateAttribute(attribute) 
+    {
+        let vis = this;
+        vis.config.attribute = attribute;
+
+        vis.xAxisLabel.text(attribute);
+        
+        vis.updateVis();
+    }
+
     updateVis() 
     {
         let vis = this;
 
+        // Filter out null values; when not filtered, they are plotted at 0 for some reason
+        const validData = vis.data.filter(d => d[vis.config.attribute] != null);
+
         // Recompute bins and scales in case data or attribute changed
         vis.xScale
-            .domain(d3.extent(vis.data, d => +d[vis.config.attribute]))
+            .domain(d3.extent(validData, d => d[vis.config.attribute]))
             .nice(10);
+
         vis.histogram
-            .value(d => +d[vis.config.attribute])
+            .value(d => d[vis.config.attribute])
             .domain(vis.xScale.domain())
             .thresholds(vis.xScale.ticks(10));
 
-        vis.bins = vis.histogram(vis.data);
+        vis.bins = vis.histogram(validData);
         vis.yScale.domain([0, d3.max(vis.bins, d => d.length)]);
 
         vis.renderVis();
@@ -105,6 +123,8 @@ class Histogram {
             .data(vis.bins)
             .join('rect')
             .attr('x', d => vis.xScale(d.x0) + 1)
+            .transition() // pretty transitionssss
+            .duration(750)
             .attr('y', d => vis.yScale(d.length))
             .attr('width', d => Math.max(0, vis.xScale(d.x1) - vis.xScale(d.x0) - 1))
             .attr('height', d => vis.height - vis.yScale(d.length))
