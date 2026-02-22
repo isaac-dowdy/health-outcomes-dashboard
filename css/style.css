@@ -109,3 +109,49 @@ h1 {
     width: 100%;
     margin-top: 12px;
 }
+
+#tooltip {
+    position: absolute;
+    display: none;
+    background: #fff;
+    box-shadow: 3px 3px 3px 0px rgb(92 92 92 / 0.5);
+    border: 1px solid #ddd;
+    font-size: 12px;
+    font-weight: 500;
+    padding: 8px;
+    min-width: 160px;
+    color: #333;
+}
+
+.tooltip-title {
+    color: #000;
+    font-size: 14px;
+    font-weight: 600;
+}
+
+.country.is-hovered {
+    stroke: #ffbf47;
+    stroke-width: 1.6;
+    filter: drop-shadow(0 0 4px rgba(255, 191, 71, 0.6));
+}
+
+.country.is-dim {
+    opacity: 0.35;
+}
+
+.point.is-hovered,
+.hist-bar.is-hovered {
+    stroke: #ffbf47;
+    stroke-width: 1.6;
+    filter: drop-shadow(0 0 4px rgba(255, 191, 71, 0.6));
+}
+
+.point.is-dim,
+.hist-bar.is-dim {
+    opacity: 0.35;
+}
+
+#tooltip ul {
+    margin: 5px 0 0 0;
+    padding-left: 20px;
+}

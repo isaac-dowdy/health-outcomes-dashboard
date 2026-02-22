@@ -119,6 +119,36 @@ class choropleth {
             .attr('vector-effect', 'non-scaling-stroke')
             .attr('stroke-linejoin', 'round')
             .attr('stroke-linecap', 'round')
+            
+        countryPaths
+            .on('mouseover', (event, d) => {
+                countryPaths
+                    .classed('is-hovered', false)
+                    .classed('is-dim', true);
+
+                d3.select(event.currentTarget)
+                    .classed('is-hovered', true)
+                    .classed('is-dim', false);
+
+                d3.select('#tooltip')
+                    .style('display', 'block')
+                    .style('left', (event.pageX + 15) + 'px')
+                    .style('top', (event.pageY + 15) + 'px')
+                    .html(`
+                        <div class="tooltip-title">${d.properties.name}</div>
+                        <div>${vis.currentAttribute}: ${d.properties[vis.currentAttribute] != null ? d.properties[vis.currentAttribute] : 'N/A'}</div>
+                    `);
+            })
+            .on('mouseleave', () => {
+                countryPaths
+                    .classed('is-hovered', false)
+                    .classed('is-dim', false);
+
+                d3.select('#tooltip')
+                    .style('display', 'none');
+            }); 
+
+        countryPaths
             .transition() // pretty transitionssss
             .duration(750)
             .attr('fill', d => {
