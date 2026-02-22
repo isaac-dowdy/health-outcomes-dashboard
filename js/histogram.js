@@ -119,16 +119,48 @@ class Histogram {
     {
         let vis = this;
 
-        vis.chart.selectAll('rect')
+        const bars = vis.chart.selectAll('rect')
             .data(vis.bins)
             .join('rect')
-            .attr('x', d => vis.xScale(d.x0) + 1)
+            .attr('class', 'hist-bar')
+            .attr('x', d => vis.xScale(d.x0) + 1);
+
+        bars
+            .on('mouseover', (event, d) => {
+                bars
+                    .classed('is-hovered', false)
+                    .classed('is-dim', true);
+
+                d3.select(event.currentTarget)
+                    .classed('is-hovered', true)
+                    .classed('is-dim', false);
+
+                d3.select('#tooltip')
+                    .style('left', (event.pageX + 15) + 'px')
+                    .style('top', (event.pageY + 15) + 'px')
+                    .style('display', 'block')
+                    .html(`
+                        <div class="tooltip-title">${d.length} Countries</div>
+                        <div>Range: ${d.x0} - ${d.x1}</div>
+                    `);
+            })
+            .on('mouseleave', () => {
+                bars
+                    .classed('is-hovered', false)
+                    .classed('is-dim', false);
+
+                d3.select('#tooltip')
+                    .style('display', 'none');
+            });
+        
+        bars
             .transition() // pretty transitionssss
             .duration(750)
             .attr('y', d => vis.yScale(d.length))
             .attr('width', d => Math.max(0, vis.xScale(d.x1) - vis.xScale(d.x0) - 1))
             .attr('height', d => vis.height - vis.yScale(d.length))
             .attr('fill', '#08519c');
+            
 
         vis.xAxisGroup.call(vis.xAxis);
         vis.yAxisGroup.call(vis.yAxis);

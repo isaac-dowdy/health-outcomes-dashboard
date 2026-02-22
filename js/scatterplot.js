@@ -103,14 +103,45 @@ class scatterplot {
             .join('circle')
             .attr('class', 'point')
             .attr('r', 4)
-            .transition() // pretty transitionssss
-            .duration(750)
-            .attr('cy', d => vis.yScale(d[vis.config.attribute2]))
-            .attr('cx', d => vis.xScale(d[vis.config.attribute1]))
             .attr('fill', '#08519c');
 
             vis.xAxisGroup.call(vis.xAxis);
             vis.yAxisGroup.call(vis.yAxis);
+
+        circles
+            .on('mouseover', (event, d) => {
+                circles
+                    .classed('is-hovered', false)
+                    .classed('is-dim', true);
+
+                d3.select(event.currentTarget)
+                    .classed('is-hovered', true)
+                    .classed('is-dim', false);
+
+                d3.select('#tooltip')
+                    .style('display', 'block')
+                    .style('left', (event.pageX + 15) + 'px')
+                    .style('top', (event.pageY + 15) + 'px')
+                    .html(`
+                        <div class="tooltip-title">${d.Country}</div>
+                        <div>${vis.config.attribute1}: ${d[vis.config.attribute1]}</div>
+                        <div>${vis.config.attribute2}: ${d[vis.config.attribute2]}</div>
+                    `);
+            })
+            .on('mouseleave', () => {
+                circles
+                    .classed('is-hovered', false)
+                    .classed('is-dim', false);
+
+                d3.select('#tooltip')
+                    .style('display', 'none');
+            });
+
+        circles
+            .transition() // pretty transitionssss
+            .duration(750)
+            .attr('cy', d => vis.yScale(d[vis.config.attribute2]))
+            .attr('cx', d => vis.xScale(d[vis.config.attribute1]));
 
     }
 }
