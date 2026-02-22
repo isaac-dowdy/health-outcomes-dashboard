@@ -4,7 +4,9 @@ class scatterplot {
             parentElement: _config.parentElement,
             containerWidth: _config.containerWidth || 500,
             containerHeight: _config.containerHeight || 350,
-            margin: _config.margin || { top: 10, right: 10, bottom: 30, left: 30}
+            margin: _config.margin || { top: 10, right: 10, bottom: 30, left: 30},
+            attribute1: _config.attribute1 || "Expenditure",
+            attribute2: _config.attribute2 || "Expectancy"
         }
 
         this.data = _data;
@@ -19,22 +21,17 @@ class scatterplot {
 
         vis.xScale = d3.scaleLinear()
             .range([0, vis.width])
-            .domain([0, d3.max(vis.data, d => d.Expenditure)]);
+            .domain([0, d3.max(vis.data, d => d[vis.config.attribute1])]);
 
         vis.yScale = d3.scaleLinear()
             .range([vis.height, 0])
-            .domain([0, d3.max(vis.data, d => d.Expectancy)]);
+            .domain([0, d3.max(vis.data, d => d[vis.config.attribute2])]);
 
         vis.xAxis = d3.axisBottom(vis.xScale)
             .ticks(12)
-            //.tickSize(-vis.height - 10)
-            //.tickPadding(10)
-            //.tickFormat(d => d + ' km');
 
         vis.yAxis = d3.axisLeft(vis.yScale)
             .ticks(6)
-            //.tickSize(-vis.width - 10)
-            //.tickPadding(10);
 
         vis.svg = d3.select(vis.config.parentElement)
             .attr('width', vis.width + vis.config.margin.left + vis.config.margin.right)
@@ -55,14 +52,14 @@ class scatterplot {
             .attr('x', vis.config.containerWidth / 2)
             .attr('y', vis.config.containerHeight - 30)
             .attr('text-anchor', 'middle')
-            .text('Health Expenditure per Capita (USD)');
+            .text(vis.config.attribute1);
 
         vis.yAxisLabel = vis.svg.append('text')
             .attr('class', 'axis-label')
             .attr('transform', 'rotate(-90)')
             .attr('y', 15)
             .attr('text-anchor', 'end')
-            .text('Life Expectancy (years)')
+            .text(vis.config.attribute2);
 
         vis.updateVis();     
     }
@@ -75,8 +72,8 @@ class scatterplot {
             .join('circle')
             .attr('class', 'point')
             .attr('r', 4)
-            .attr('cy', d => vis.yScale(d.Expectancy))
-            .attr('cx', d => vis.xScale(d.Expenditure))
+            .attr('cy', d => vis.yScale(d[vis.config.attribute2]))
+            .attr('cx', d => vis.xScale(d[vis.config.attribute1]))
             .attr('fill', '#08519c');
 
             vis.xAxisGroup.call(vis.xAxis);
