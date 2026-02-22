@@ -11,8 +11,38 @@
 
         <div class="dashboard">
             <div class="maps">
-                <svg id="choropleth1"></svg>
-                <svg id="choropleth2"></svg>            
+                <div class="maps-row">
+                    <svg id="choropleth1"></svg>
+                    <svg id="choropleth2"></svg>
+                </div>
+                <div class="control-panel">
+                    <div class="dropdown1">
+                        <button onclick="myFunction1()" class="dropbtn">Attribute 1</button>
+                        <div id="myDropdown1" class="dropdown-content">
+                            <a href="#">Healthcare Expenditure</a>
+                            <a href="#">Life Expectancy</a>
+                            <a href="#">GDP per Capita</a>
+                            <a href="#">Population</a>
+                            <a href="#">Physicians per 1,000 People</a>
+                            <a href="#">Undernourishment Rate</a>
+                            <a href="#">Obesity Rate</a>
+                            <a href="#">Annual Working Hours</a>
+                        </div>
+                    </div>
+                    <div class="dropdown2">
+                        <button onclick="myFunction2()" class="dropbtn">Attribute 2</button>
+                        <div id="myDropdown2" class="dropdown-content">
+                            <a href="#">Healthcare Expenditure</a>
+                            <a href="#">Life Expectancy</a>
+                            <a href="#">GDP per Capita</a>
+                            <a href="#">Population</a>
+                            <a href="#">Physicians per 1,000 People</a>
+                            <a href="#">Undernourishment Rate</a>
+                            <a href="#">Obesity Rate</a>
+                            <a href="#">Annual Working Hours</a>
+                        </div>
+                    </div>
+                </div>      
             </div>
 
             <div class="charts">
@@ -30,14 +60,19 @@
             <ul>
                 <li>Health Expenditure: <a href="https://ourworldindata.org/grapher/annual-healthcare-expenditure-per-capita?time=2022">ourworldindata.org</a></li>
                 <li>Life Expectancy: <a href="https://ourworldindata.org/grapher/life-expectancy?tab=map&time=2022&country=OWID_WRL~Americas~OWID_EUR~OWID_AFR">ourworldindata.org</a></li>
+                <li>GDP per Capita: <a href="https://ourworldindata.org/grapher/gdp-per-capita-worldbank?time=2022&country=USA~DEU~GBR~BRA">ourworldindata.org</a></li>
+                <li>Population: <a href="https://ourworldindata.org/grapher/population-with-un-projections?tab=map&time=2022">ourworldindata.org</a></li>
+                <li>Physicians per 1,000 People: <a href="https://ourworldindata.org/grapher/physicians-per-1000-people?tab=map&time=2022&country=OWID_WRL~Americas~OWID_EUR~OWID_AFR">ourworldindata.org</a></li>
+                <li>Undernourishment Rate: <a href="https://ourworldindata.org/grapher/prevalence-of-undernourishment?tab=map&country=OWID_WRL~Sub-Saharan+Africa+%28FAO%29~Southern+Asia+%28FAO%29~South+America+%28FAO%29">ourworldindata.org</a></li>
+                <li>Obesity Rate: <a href="https://ourworldindata.org/grapher/share-of-adults-defined-as-obese?country=USA~GBR~BRA~IND">ourworldindata.org</a></li>   
+                <li>Annual Working Hours: <a href="https://ourworldindata.org/grapher/annual-working-hours-per-worker?tab=map&time=2022&country=GBR~DEU~USA~FRA">ourworldindata.org</a></li>
             </ul>
             NOTE: Data from 2022
         </div>
 
         <script src="js/d3.v6.min.js"></script>
         <script src="js/main.js"></script>
-        <script src="js/expenditureHistogram.js"></script>
-        <script src="js/expectancyHistogram.js"></script>
+        <script src="js/histogram.js"></script>
         <script src="js/scatterplot.js"></script>
         <script src="js/choroplethMap.js"></script>
     </body>

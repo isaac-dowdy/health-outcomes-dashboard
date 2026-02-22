@@ -19,14 +19,6 @@ class choropleth {
         this.initVis();
     }
 
-    updateAttribute(attribute) {
-        let vis = this;
-        
-        vis.currentAttribute = attribute;
-        
-        vis.updateVis();
-    }
-
     initVis() {
         let vis = this;
 
@@ -62,6 +54,17 @@ class choropleth {
             .attr('dy', '0.35em')
             .attr('y', -10)
             .text(vis.currentAttribute);
+
+        vis.updateVis();
+    }
+
+    // Called whenever a new attribute is selected; updates the current attribute, legend
+    updateAttribute(attribute) 
+    {
+        let vis = this;
+
+        vis.currentAttribute = attribute;
+        vis.legendTitle.text(attribute);
 
         vis.updateVis();
     }
@@ -116,6 +119,8 @@ class choropleth {
             .attr('vector-effect', 'non-scaling-stroke')
             .attr('stroke-linejoin', 'round')
             .attr('stroke-linecap', 'round')
+            .transition() // pretty transitionssss
+            .duration(750)
             .attr('fill', d => {
                 if (d.properties[vis.currentAttribute] != null) {
                     return vis.colorScale(d.properties[vis.currentAttribute]);
