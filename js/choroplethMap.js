@@ -146,6 +146,19 @@ class choropleth {
 
                 d3.select('#tooltip')
                     .style('display', 'none');
+            })
+            .on('click', (event, d) => {
+                const countryName = d.properties.name;
+                
+                // Toggle selection: if already selected, deselect; otherwise select
+                if (selectedCountries.has(countryName)) {
+                    selectedCountries.delete(countryName);
+                } else {
+                    selectedCountries.add(countryName);
+                }
+                
+                // Update all visualizations with the new filter
+                updateAllVisualizations();
             }); 
 
         countryPaths

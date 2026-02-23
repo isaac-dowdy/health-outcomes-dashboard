@@ -1,6 +1,9 @@
-// TODO: Interaction, Color, Light fixes to axis values to be more readable 
+// TODO: Color, Light fixes to axis values to be more readable 
 
 let data, expenditureChart, expectancyChart, scatterplotChart, choroMap, attribute1, attribute2;
+
+// Global filter state for selected countries
+let selectedCountries = new Set();
 
 // these will be used to hold the current attribute being visualized
 attribute1 = "Expenditure";
@@ -111,6 +114,15 @@ Promise.all([
             containerWidth: 600,
             containerHeight: 600,
         }, data[0], attribute2);
+
+        // This function updates all visualizations with the current filter
+        window.updateAllVisualizations = function() {
+            histogram1.applyFilter(selectedCountries);
+            histogram2.applyFilter(selectedCountries);
+            scatterplotChart.applyFilter(selectedCountries);
+            choroMap1.applyFilter(selectedCountries);
+            choroMap2.applyFilter(selectedCountries);
+        }
 
         // This function creates the listener for the dropboxes - when a new value is selected, call the updateAttribute function
         function setupDropdownListeners()
