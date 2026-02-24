@@ -120,7 +120,7 @@ class Histogram {
 
         // Apply country filter if any countries are selected
         if (vis.selectedCountries && vis.selectedCountries.size > 0) {
-            validData = validData.filter(d => vis.selectedCountries.has(d.Country));
+            validData = validData.filter(d => vis.selectedCountries.has(d.Code));
         }
 
         // Recompute bins and scales in case data or attribute changed

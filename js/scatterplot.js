@@ -223,7 +223,7 @@ class scatterplot {
 
         // Apply country filter if any countries are selected
         if (vis.selectedCountries && vis.selectedCountries.size > 0) {
-            validData = validData.filter(d => vis.selectedCountries.has(d.Country));
+            validData = validData.filter(d => vis.selectedCountries.has(d.Code));
         }
 
         const circles = vis.chart.selectAll('.point')
@@ -233,7 +233,7 @@ class scatterplot {
             .attr('r', 4)
             .attr('fill', '#08519c')
             .classed('is-selected', d => {
-                return vis.selectedCountries && vis.selectedCountries.has(d.Country);
+                return vis.selectedCountries && vis.selectedCountries.has(d.Code);
             });
 
             vis.xAxisGroup.call(vis.xAxis);

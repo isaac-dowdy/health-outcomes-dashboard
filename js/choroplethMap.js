@@ -132,9 +132,15 @@ class choropleth {
             
         countryPaths
             .on('mouseover', (event, d) => {
+                // Don't dim selected countries
+                const countryCode = d.id;
+                
                 countryPaths
                     .classed('is-hovered', false)
-                    .classed('is-dim', true);
+                    .classed('is-dim', function() {
+                        const thisCountryCode = d3.select(this).datum().id;
+                        return !selectedCountries.has(thisCountryCode);
+                    });
 
                 d3.select(event.currentTarget)
                     .classed('is-hovered', true)
@@ -158,13 +164,15 @@ class choropleth {
                     .style('display', 'none');
             })
             .on('click', (event, d) => {
-                const countryName = d.properties.name;
+                const countryCode = d.id;
                 
                 // Toggle selection: if already selected, deselect; otherwise select
-                if (selectedCountries.has(countryName)) {
-                    selectedCountries.delete(countryName);
+                if (selectedCountries.has(countryCode)) {
+                    selectedCountries.delete(countryCode);
+                    d3.select(event.currentTarget).classed('is-selected', false);
                 } else {
-                    selectedCountries.add(countryName);
+                    selectedCountries.add(countryCode);
+                    d3.select(event.currentTarget).classed('is-selected', true);
                 }
                 
                 // Update all visualizations with the new filter
@@ -181,6 +189,13 @@ class choropleth {
                     return 'url(#lightstripes)';
                 }
             });
+        
+        // Maintain selected state after transitions
+        countryPaths.each(function(d) {
+            if (selectedCountries.has(d.id)) {
+                d3.select(this).classed('is-selected', true);
+            }
+        });
 
         vis.legend.selectAll('.legend-label')
             .data(vis.legendStops)
@@ -201,5 +216,15 @@ class choropleth {
             .attr('stop-color', d => d.color);
 
         vis.legendRect.attr('fill', 'url(#legend-gradient)');
+    }
+    
+    applyFilter(selectedCountries) {
+        let vis = this;
+        
+        // Update the visual state of all countries based on selection
+        vis.chart.selectAll('.country')
+            .classed('is-selected', function(d) {
+                return selectedCountries.has(d.id);
+            });
     }
 }

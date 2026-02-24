@@ -139,6 +139,11 @@ h1 {
     opacity: 0.35;
 }
 
+.country.is-selected {
+    stroke: #ff6b6b;
+    stroke-width: 2.5;
+}
+
 .point.is-hovered,
 .hist-bar.is-hovered {
     stroke: #ffbf47;
