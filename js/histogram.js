@@ -15,6 +15,16 @@ class Histogram {
         this.initVis();
     }
 
+    formatNumber(num) {
+        if (num >= 1000000) {
+            return (num / 1000000).toFixed(1) + 'M';
+        } else if (num >= 1000) {
+            return (num / 1000).toFixed(1) + 'K';
+        } else {
+            return num.toFixed(1);
+        }
+    }
+
     initVis() 
     {
         let vis = this;
@@ -47,7 +57,8 @@ class Histogram {
             .range([vis.height, 0])
             .domain([0, d3.max(vis.bins, d => d.length)]);
 
-        vis.xAxis = d3.axisBottom(vis.xScale);
+        vis.xAxis = d3.axisBottom(vis.xScale)
+            .tickFormat(d => vis.formatNumber(d));
         vis.yAxis = d3.axisLeft(vis.yScale);
 
         vis.chart = vis.svg.append('g')

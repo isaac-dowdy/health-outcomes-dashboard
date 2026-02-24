@@ -19,6 +19,16 @@ class choropleth {
         this.initVis();
     }
 
+    formatNumber(num) {
+        if (num >= 1000000) {
+            return (num / 1000000).toFixed(1) + 'M';
+        } else if (num >= 1000) {
+            return (num / 1000).toFixed(1) + 'K';
+        } else {
+            return Math.round(num);
+        }
+    }
+
     initVis() {
         let vis = this;
 
@@ -36,7 +46,7 @@ class choropleth {
         vis.geoPath = d3.geoPath().projection(vis.projection);
 
         vis.colorScale = d3.scaleLinear()
-            .range(['#f0f0f0', '#08519c'])
+            .range(['#ccebc5', '#08519c'])
             .interpolate(d3.interpolateHcl);
 
         vis.linearGradient = vis.svg.append('defs').append('linearGradient')
@@ -169,7 +179,7 @@ class choropleth {
             .attr('x', (d, i) => {
                 return i == 0 ? 0 : vis.config.legendRectWidth;
             })
-            .text(d => Math.round(d.value));
+            .text(d => vis.formatNumber(d.value));
 
         vis.linearGradient.selectAll('stop')
             .data(vis.legendStops)
