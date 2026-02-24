@@ -6,11 +6,27 @@ class scatterplot {
             containerHeight: _config.containerHeight || 350,
             margin: _config.margin || { top: 10, right: 10, bottom: 30, left: 30},
             attribute1: _config.attribute1 || "Expenditure",
-            attribute2: _config.attribute2 || "Expectancy"
+            attribute2: _config.attribute2 || "Expectancy",
+            colorAttribute: _config.colorAttribute || "None",
+            tooltipPadding: 10,
+            legendBottom: _config.containerHeight - 25,
+            legendLeft: (_config.containerWidth - 100) / 2,
+            legendRectHeight: 12,
+            legendRectWidth: 100,
         }
 
         this.data = _data;
         this.initVis();
+    }
+
+    formatNumber(num) {
+        if (num >= 1000000) {
+            return (num / 1000000).toFixed(1) + 'M';
+        } else if (num >= 1000) {
+            return (num / 1000).toFixed(1) + 'K';
+        } else {
+            return num.toFixed(1);
+        }
     }
 
     initVis() {
@@ -33,9 +49,11 @@ class scatterplot {
 
         vis.xAxis = d3.axisBottom(vis.xScale)
             .ticks(12)
+            .tickFormat(d => vis.formatNumber(d));
 
         vis.yAxis = d3.axisLeft(vis.yScale)
             .ticks(6)
+            .tickFormat(d => vis.formatNumber(d));
 
         vis.svg = d3.select(vis.config.parentElement)
             .attr('width', vis.width + vis.config.margin.left + vis.config.margin.right)
@@ -54,7 +72,7 @@ class scatterplot {
         vis.xAxisLabel = vis.svg.append('text')
             .attr('class', 'axis-label')
             .attr('x', vis.config.containerWidth / 2)
-            .attr('y', vis.config.containerHeight - 30)
+            .attr('y', vis.config.containerHeight - 60)
             .attr('text-anchor', 'middle')
             .text(vis.config.attribute1);
 
@@ -64,6 +82,51 @@ class scatterplot {
             .attr('y', 15)
             .attr('text-anchor', 'end')
             .text(vis.config.attribute2);
+
+        vis.legend = vis.svg.append('g')
+            .attr('class', 'legend')
+            .attr('transform', `translate(${vis.config.legendLeft}, ${vis.config.legendBottom})`);
+        
+        // Define gradient for legend
+        vis.linearGradient = vis.svg.append('defs')
+            .append('linearGradient')
+            .attr('id', 'legend-gradient');
+        
+        vis.legendRect = vis.legend.append('rect')
+            .attr('width', vis.config.legendRectWidth)
+            .attr('height', vis.config.legendRectHeight)
+            .style('fill', 'url(#legend-gradient)');
+
+        vis.legendTitle = vis.legend.append('text')
+            .attr('class', 'legend-title')
+            .attr('dy', '0.35em')
+            .attr('y', -8)
+            .attr('x', vis.config.legendRectWidth / 2)
+            .attr('text-anchor', 'middle')
+            .style('font-size', '11px')
+            .style('font-weight', 'bold')
+            .text(vis.config.colorAttribute);
+        
+        // Add min and max value labels for the legend
+        vis.legendMinLabel = vis.legend.append('text')
+            .attr('class', 'legend-label')
+            .attr('dy', '0.35em')
+            .attr('y', vis.config.legendRectHeight + 10)
+            .attr('x', 0)
+            .style('font-size', '9px');
+        
+        vis.legendMaxLabel = vis.legend.append('text')
+            .attr('class', 'legend-label')
+            .attr('dy', '0.35em')
+            .attr('y', vis.config.legendRectHeight + 10)
+            .attr('x', vis.config.legendRectWidth)
+            .attr('text-anchor', 'end')
+            .style('font-size', '9px');
+        
+        // Initially hide legend if no color attribute is selected
+        if (vis.config.colorAttribute === "None") {
+            vis.legend.style('opacity', 0);
+        }
 
         vis.updateVis();     
     }
@@ -98,6 +161,58 @@ class scatterplot {
         let vis = this;
         vis.selectedCountries = selectedCountries;
         vis.updateVis();
+      
+    }
+  
+    updateColor(colorAttribute) {
+        let vis = this;
+
+        vis.colorAttribute = colorAttribute;
+        vis.legendTitle.text(colorAttribute);
+
+        if (colorAttribute === "None") {
+            // Hide legend when no color attribute is selected
+            vis.legend.style('opacity', 0);
+            
+            vis.chart.selectAll('.point')
+                .transition()
+                .duration(750)
+                .attr('fill', '#08519c');
+        } else {
+            // Show legend
+            vis.legend.style('opacity', 1);
+            
+            const extentValues = d3.extent(vis.data, d => d[colorAttribute]);
+            
+            // Update gradient stops
+            vis.legendStops = [
+                { color: '#ccebc5', value: extentValues[0], offset: 0},
+                { color: '#08519c', value: extentValues[1], offset: 100},
+            ];
+            
+            // Update the gradient
+            vis.linearGradient.selectAll('stop')
+                .data(vis.legendStops)
+                .join('stop')
+                .attr('offset', d => d.offset + '%')
+                .attr('stop-color', d => d.color);
+            
+            // Update legend labels
+            vis.legendMinLabel.text(vis.formatNumber(extentValues[0]));
+            vis.legendMaxLabel.text(vis.formatNumber(extentValues[1]));
+            
+            // Create color scale
+            const colorScale = d3.scaleLinear()
+                .domain(extentValues)
+                .range(['#ccebc5', '#08519c'])
+                .interpolate(d3.interpolateHcl);
+            
+            // Update point colors
+            vis.chart.selectAll('.point')
+                .transition()
+                .duration(750)
+                .attr('fill', d => colorScale(d[colorAttribute]));
+        }
     }
 
     updateVis() {
@@ -134,15 +249,23 @@ class scatterplot {
                     .classed('is-hovered', true)
                     .classed('is-dim', false);
 
+                let tooltipHTML = `
+                    <div class="tooltip-title">${d.Country}</div>
+                    <div>${vis.config.attribute1}: ${d[vis.config.attribute1]}</div>
+                    <div>${vis.config.attribute2}: ${d[vis.config.attribute2]}</div>
+                `;
+                
+                // Only add color attribute if it's not "None" and different from attribute1 and attribute2
+                if (vis.colorAttribute && vis.colorAttribute !== "None" && vis.colorAttribute !== vis.config.attribute1 && vis.colorAttribute !== vis.config.attribute2) 
+                {
+                    tooltipHTML += `<div>${vis.colorAttribute}: ${d[vis.colorAttribute]}</div>`;
+                }
+
                 d3.select('#tooltip')
                     .style('display', 'block')
                     .style('left', (event.pageX + 15) + 'px')
                     .style('top', (event.pageY + 15) + 'px')
-                    .html(`
-                        <div class="tooltip-title">${d.Country}</div>
-                        <div>${vis.config.attribute1}: ${d[vis.config.attribute1]}</div>
-                        <div>${vis.config.attribute2}: ${d[vis.config.attribute2]}</div>
-                    `);
+                    .html(tooltipHTML);
             })
             .on('mouseleave', () => {
                 circles

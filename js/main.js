@@ -1,5 +1,3 @@
-// TODO: Color, Light fixes to axis values to be more readable 
-
 let data, expenditureChart, expectancyChart, scatterplotChart, choroMap, attribute1, attribute2;
 
 // Global filter state for selected countries
@@ -19,7 +17,8 @@ attributeNameDict =
     "Physicians per 1,000 People": "Physicians",
     "Undernourishment Rate": "Undernourishment",
     "Obesity Rate": "Obesity",
-    "Annual Working Hours": "WorkingHours"
+    "None": "None",
+    "Region": "Region"
 }
 
 Promise.all([
@@ -35,7 +34,6 @@ Promise.all([
             Physicians: d.Physicians ? +d.Physicians : null,
             Undernourishment: d.Undernourishment ? +d.Undernourishment : null,
             Obesity: d.Obesity ? +d.Obesity : null,
-            WorkingHours: d.WorkingHours ? +d.WorkingHours : null
         }))
     ]).then(_data => 
         {
@@ -50,7 +48,6 @@ Promise.all([
         const physiciansByCode = new Map(data[1].map(d => [d.Code, d.Physicians]));
         const undernourishmentByCode = new Map(data[1].map(d => [d.Code, d.Undernourishment]));
         const obesityByCode = new Map(data[1].map(d => [d.Code, d.Obesity]));
-        const workingHoursByCode = new Map(data[1].map(d => [d.Code, d.WorkingHours]));
         data[0].features.forEach(feature => {
             const code = feature.id;
             // If empty, set to null
@@ -61,7 +58,6 @@ Promise.all([
             feature.properties.Physicians = physiciansByCode.get(code) || null;
             feature.properties.Undernourishment = undernourishmentByCode.get(code) || null;
             feature.properties.Obesity = obesityByCode.get(code) || null;
-            feature.properties.WorkingHours = workingHoursByCode.get(code) || null;
         });
 
         console.log(data);
@@ -93,8 +89,8 @@ Promise.all([
         {
             parentElement: '#scatterplot',
             containerWidth: 450,
-            containerHeight: 259,
-            margin: { top: 20, right: 20, bottom: 60, left: 40 },
+            containerHeight: 295,
+            margin: { top: 20, right: 20, bottom: 95, left: 40 },
             attribute1: attribute1,
             attribute2: attribute2
         }, data[1]);
@@ -160,6 +156,18 @@ Promise.all([
 
                 })
             });
+
+            const dropdown3Links = document.querySelectorAll('#myDropdown3 a');
+            dropdown3Links.forEach(link => {
+                link.addEventListener('click', function(event) {
+                    event.preventDefault();
+
+                    const displayName = this.textContent;
+                    const colorAttribute = attributeNameDict[displayName];
+
+                    scatterplotChart.updateColor(colorAttribute);
+                })
+            });
         }
 
         setupDropdownListeners();
@@ -175,6 +183,11 @@ function myFunction1()
 function myFunction2() 
 {
     document.getElementById("myDropdown2").classList.toggle("show");
+}
+
+function myFunction3()
+{
+    document.getElementById("myDropdown3").classList.toggle("show");
 }
 
 window.onclick = function(event) 
