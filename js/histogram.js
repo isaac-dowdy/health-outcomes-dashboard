@@ -103,12 +103,25 @@ class Histogram {
         vis.updateVis();
     }
 
+    // Filter histogram to show only selected countries, or all if none selected
+    applyFilter(selectedCountries)
+    {
+        let vis = this;
+        vis.selectedCountries = selectedCountries;
+        vis.updateVis();
+    }
+
     updateVis() 
     {
         let vis = this;
 
         // Filter out null values; when not filtered, they are plotted at 0 for some reason
-        const validData = vis.data.filter(d => d[vis.config.attribute] != null);
+        let validData = vis.data.filter(d => d[vis.config.attribute] != null);
+
+        // Apply country filter if any countries are selected
+        if (vis.selectedCountries && vis.selectedCountries.size > 0) {
+            validData = validData.filter(d => vis.selectedCountries.has(d.Country));
+        }
 
         // Recompute bins and scales in case data or attribute changed
         vis.xScale

@@ -155,6 +155,15 @@ class scatterplot {
 
     }
 
+    // Filter scatterplot to show only selected countries, or all if none selected
+    applyFilter(selectedCountries)
+    {
+        let vis = this;
+        vis.selectedCountries = selectedCountries;
+        vis.updateVis();
+      
+    }
+  
     updateColor(colorAttribute) {
         let vis = this;
 
@@ -210,14 +219,22 @@ class scatterplot {
         let vis = this;
 
         // Filter out data points with null values
-        const validData = vis.data.filter(d => d[vis.config.attribute1] != null && d[vis.config.attribute2] != null);
+        let validData = vis.data.filter(d => d[vis.config.attribute1] != null && d[vis.config.attribute2] != null);
+
+        // Apply country filter if any countries are selected
+        if (vis.selectedCountries && vis.selectedCountries.size > 0) {
+            validData = validData.filter(d => vis.selectedCountries.has(d.Country));
+        }
 
         const circles = vis.chart.selectAll('.point')
             .data(validData, d => d.Country)
             .join('circle')
             .attr('class', 'point')
             .attr('r', 4)
-            .attr('fill', '#08519c');
+            .attr('fill', '#08519c')
+            .classed('is-selected', d => {
+                return vis.selectedCountries && vis.selectedCountries.has(d.Country);
+            });
 
             vis.xAxisGroup.call(vis.xAxis);
             vis.yAxisGroup.call(vis.yAxis);
