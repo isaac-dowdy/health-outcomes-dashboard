@@ -10,7 +10,7 @@ attribute2 = "Expectancy";
 // This dictionary maps the display names of attributes from the dropboxes to the variable names in the data 
 attributeNameDict =
 {
-    "Healthcare Expenditure": "Expenditure",
+    "Healthcare Expenditure per Capita": "Expenditure",
     "Life Expectancy": "Expectancy",
     "Population": "Population",
     "GDP per Capita": "GDP",
